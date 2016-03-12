@@ -1,0 +1,20 @@
+body {
+    background-color: gray;
+    margin: 0;
+}
+
+#container {
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: center;
+    align-content: center;
+    align-items: center;
+}
+
+.palette-box {
+    margin: 0;
+    font-family: monospace;
+    font-size: large;
+    width: 10em;
+    height: 10em;
+}
