@@ -1,40 +1,60 @@
-var clear = function() {
-    var c = document.getElementById('container');
+// Yikes
+
+let clear = function() {
+    let c = document.getElementById('container');
     while (c.firstChild) {
         c.removeChild(c.firstChild);
     }
 }
 
-var display = function(colors) {
+let display = function(colors) {
     clear();
 
-    var c = document.getElementById('container');
-    for (var i = 0; i < colors.length; i++) {
-        var box = document.createElement('div');
+    let c = document.getElementById('container');
+    for (let colorObj of colors) {
+        let box = document.createElement('div');
         box.className = 'palette-box';
-        box.style.backgroundColor = colors[i];
+        box.style.backgroundColor = colorObj.hexColor;
         box.style.color = 'white';
         box.style.textShadow = '1px 1px 4px black';
-        var text = document.createTextNode(colors[i]);
-        box.appendChild(text);
+        let text = document.createTextNode(colorObj.hexColor);
+        let hexP = document.createElement('p');
+        hexP.appendChild(text);
+        box.appendChild(hexP);
+
+        if (colorObj.description) {
+            let descText = document.createTextNode(colorObj.description);
+            let descP = document.createElement("p");
+            descP.appendChild(descText);
+            box.appendChild(descP);
+        }
+
         c.appendChild(box);
     }
 };
 
-var parseList = function(str) {
-    var parsed = str.replace(/[^a-fA-F0-9, ]/g, '').split(/[ ,]/);
-    var finalParsed = [];
-    var finalParsedIx = 0;
-    for (var i = 0; i < parsed.length; i++) {
-        if (parsed[i].length > 0) {
-            finalParsed[finalParsedIx++] = '#' + parsed[i];
+let parseList = function(str) {
+    let colorStmts = str.split(",");
+    let colorObjs = [];
+    for (let stmt of colorStmts) {
+        stmt = stmt.trim();
+
+        let hexColor = stmt.slice(0, 7);
+        // We're being strict
+        if (! /^#[a-fA-F0-9]{6}$/.test(hexColor)) {
+            colorObjs.push({"hexColor": "#000000", "description": 'Invalid: \"' + stmt + '\"'});
+            continue;
         }
+
+        let description = stmt.slice(7).trim();
+
+        colorObjs.push({"hexColor": hexColor, "description": description});
     }
-    return finalParsed;
+    return colorObjs;
 };
 
-var update = function() {
-    var b = document.getElementById('input-box');
-    var colors = parseList(b.value);
+let update = function() {
+    let b = document.getElementById('input-box');
+    let colors = parseList(b.value);
     display(colors);
 };
